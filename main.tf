@@ -3,6 +3,20 @@ variable "env" {
   type        = string
 }
 
+locals {
+  # node           = local.node
+  # gateway        = local.gateway
+  # ssh_public_key = local.ssh_keys
+  # images         = local.images
+  # protection     = module.env_locals.protection
+  # vis            = module.env_locals.vis
+  # diskpool       = module.env_locals.diskpool
+  # playbooks      = local.playbooks
+
+  tranche        = module.env_locals.tranche
+  dependencies   = module.env_locals.dependencies
+}
+
 # common/main.tf
 module "env_locals" {
   source = "./envs/${var.env}/locals"
@@ -12,19 +26,6 @@ module "ansible_playbooks" {
   source = "./envs/${var.env}/playbooks"
 
   depends_on = [ module.containers, module.virtual_machines ]
-}
-
-locals {
-  # node           = local.node
-  # gateway        = local.gateway
-  # ssh_public_key = local.ssh_keys
-  # images         = local.images
-  # protection     = module.env_locals.protection
-  # vis            = module.env_locals.vis
-  # playbooks      = local.playbooks
-
-  tranche        = module.env_locals.tranche
-  dependencies   = module.env_locals.dependencies
 }
 
 module "containers" {
@@ -37,7 +38,6 @@ module "containers" {
   gateway        = local.gateway
   ssh_public_key = local.ssh_keys
   protection     = module.env_locals.protection
-  # diskpool       = module.env_locals.diskpool
   name           = each.key
   vmid           = each.value.vmid
   static_ip      = each.value.static_ip
@@ -59,7 +59,6 @@ module "virtual_machines" {
   gateway        = local.gateway
   ssh_public_key = local.ssh_keys
   protection     = module.env_locals.protection
-  # diskpool       = module.env_locals.diskpool
   name           = each.key
   vmid           = each.value.vmid
   static_ip      = each.value.static_ip
@@ -74,6 +73,7 @@ module "virtual_machines" {
 
 data "local_file" "ssh_public_key" {
   filename = "/home/ubuntu/.ssh/id_rsa.pub"
+  # filename = "/home/ubuntu/.ssh/authorized_keys"  # 'recently' Proxmox broke the ability to use authorized_keys file directly (multiple keys issue)
 }
 
 # module "pools" {
