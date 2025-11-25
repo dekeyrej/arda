@@ -62,6 +62,13 @@ graph TD;
 
 ## Usage:
 
+### Python stuff
+- from repo root
+- `python3 -m venv venv`
+- `source venv/bin/activate`
+- `pip install -r python/requirements.txt`
+- `python python/builder-by-env.py` - this generates the ansible_playbooks.tf file for each environment
+
 ### Dev - 
 - `tofu init -var="env=dev"`
 - `tofu plan -var="env=dev"`
